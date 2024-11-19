@@ -126,13 +126,11 @@ class mcmc:
 
       self.possibility = np.array([np.exp(-energy/self.T) for energy in self.energy])
       self.partial_function = np.sum(self.possibility)
-      min_idx = np.where(self.energy==self.energy.min())[0][0]
+      #min_idx = np.where(self.energy==self.energy.min())[0][0]
       position = np.zeros_like(self.trajectory[:,:,0])
       for i in range(len(self.energy)):
          position += self.possibility[i] / self.partial_function * self.trajectory[:,:,i]
 
-      #min_idx = np.where(self.energy==self.energy.min())[0][0]
-      #position = self.trajectory[:,:,min_idx]
       distance = self.get_distance(position)
       r  = np.linspace(0,self.boxlength*4,self.rdf_point+1)
       nr = np.zeros(self.rdf_point)
@@ -146,9 +144,9 @@ class mcmc:
       gr = np.array([ nr[i] / dv[i] for i in range(self.rdf_point)]) / self.density
       ax = clp.initialize(1, 1, width=4.3, LaTeX=True, fontsize=12)
       ax.axhline(y=1, linestyle='-.', alpha=0.5, color="k")
-      ax.set_yticks([1,2,4,6,8])
-      clp.plotone([r[1:]/self.boxlength], [gr], ax, labels=[r"$g(r)$"], colors=["r"], lw=1.5, xlim=[0,4], ylim=[0,4], xlabel=r"$r/a_0$", ylabel=r"$g(r)$")
-      clp.adjust(savefile=f"./Ar_84K_222_test.png")
+      ax.set_yticks([1,2,4,6,8,10,12])
+      clp.plotone([r[1:]/self.boxlength], [gr], ax, labels=[r"$g(r)$"], colors=["r"], lw=1.5, xlim=[0,4], ylim=[0,12], xlabel=r"$r/a_0$", ylabel=r"$g(r)$")
+      clp.adjust(savefile=f"./Ar_84K_333.png")
 
    def kernel(self):
       self.initial_box()
@@ -161,14 +159,15 @@ class mcmc:
 
 if __name__ == "__main__":
    
-   test = mcmc(nmol=108, ncycle=100, nmicro=50, nwrite=1, 
-               density=0.02445, delta_max=1, 
+   test = mcmc(nmol=108, ncycle=1000, nmicro=50, nwrite=100, 
+               density=0.02103, delta_max=1, 
                lattice_type='FCC', n=[3,3,3], 
-               T=10, pot_param=[3.404, 117.84, 12.085, 6.0], # sigma (in angstrom), epsilon (in K^-1, normalized by k_B), n, m 
+               T=84, pot_param=[3.404, 117.84, 12, 6.0], # sigma (in angstrom), epsilon (in K^-1, normalized by k_B), n, m 
                rdf_point=100)
    
    # Ar : m.p. = 83.81K; b.p. = 87.302K; teiple point 83.8058K
    # density at b.p. : 1.3954 g/cm^3 / 39.95 g/mol * 6.02214076*10^23 mol^-1 * 10^(-24) cm^3/ang^3 = 0.02103 ang^(-3)
    # FCC a=5.4691 angstrom density : 4 / (5.4691)^3 = 0.02445 ang^(-3) in teiple point 83.8058K
+   # mie potential parameter [3.404, 117.84, 12.085, 6.0]
    
    test.kernel()
