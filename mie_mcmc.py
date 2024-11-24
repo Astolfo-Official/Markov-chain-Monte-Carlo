@@ -145,24 +145,25 @@ class mcmc:
       ax = clp.initialize(1, 1, width=4.3, LaTeX=True, fontsize=12)
       ax.axhline(y=1, linestyle='-.', alpha=0.5, color="k")
       ax.set_yticks([1,2,4,6,8,10,12])
-      clp.plotone([r[1:]/self.boxlength], [gr], ax, labels=[r"$g(r)$"], colors=["r"], lw=1.5, xlim=[0,4], ylim=[0,12], xlabel=r"$r/a_0$", ylabel=r"$g(r)$")
-      clp.adjust(savefile=f"./Ar_84K_333.png")
+      clp.plotone([r[1:]/self.boxlength], [gr], ax, labels=[r"$g(r)$"], colors=["r"], lw=1.5, xlim=[0,4], ylim=[0,6], xlabel=r"$r/a_0$", ylabel=r"$g(r)$")
+      clp.adjust(savefile=f"./Ar_84K_222.png")
 
    def kernel(self):
       self.initial_box()
       for icycle in range(self.ncycle):
-         if icycle % self.nwrite == 0 :  print(f'No. {icycle:4d} cycle, total energy = {self.energy[icycle]:14.8f}')
          self.trajectory[:,:,icycle+1] = self.random_move(self.trajectory[:,:,icycle])
          self.energy[icycle+1] = self.total_energy(self.trajectory[:,:,icycle+1])
-      print(f'No. {self.ncycle:4d} cycle, total energy = {self.energy[-1]:14.8f}')
+         if icycle % self.nwrite == 0 and icycle != 0 : 
+            rmsd = np.mean(np.sqrt((self.trajectory[:,:,icycle]-self.trajectory[:,:,icycle-1])**2))
+            print(f'No. {icycle:4d} cycle, total energy = {self.energy[icycle]:.8f}, RMSD = {rmsd:.8f}')
       self.get_pcf()
 
 if __name__ == "__main__":
    
-   test = mcmc(nmol=108, ncycle=1000, nmicro=50, nwrite=100, 
+   test = mcmc(nmol=32, ncycle=1000, nmicro=50, nwrite=50, 
                density=0.02103, delta_max=1, 
-               lattice_type='FCC', n=[3,3,3], 
-               T=84, pot_param=[3.404, 117.84, 12, 6.0], # sigma (in angstrom), epsilon (in K^-1, normalized by k_B), n, m 
+               lattice_type='FCC', n=[2,2,2], 
+               T=84, pot_param=[3.404, 117.84, 12.085, 6.0], # sigma (in angstrom), epsilon (in K^-1, normalized by k_B), n, m 
                rdf_point=100)
    
    # Ar : m.p. = 83.81K; b.p. = 87.302K; teiple point 83.8058K
