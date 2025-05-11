@@ -1,0 +1,54 @@
+\usetheme{Heverlee}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{overpic}
+\usepackage{xcolor}
+
+\newtagform{blank}{}{}
+\usetagform{blank}
+
+\newcommand{\lenitem}[2][0.45\linewidth]{\parbox[t]{#1}{\strut #2\strut}}
+
+\renewcommand{\thefootnote}{[\arabic{footnote}]}
+\AtBeginEnvironment{frame}{\setcounter{footnote}{0}}
+\renewcommand{\theequation}{(\arabic{equation})}
+\newcommand{\largecdot}{{\Large \;\boldsymbol{\cdot}\,}}
+
+\setbeamertemplate{section in toc}
+{\leavevmode\leftskip=2ex%
+  \llap{%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{2ex}{-0.5ex}{0ex}{0ex}
+      \color{blue}
+      \pgfpathcircle{\pgfpoint{0pt}{.75ex}}{1.7ex}
+      \pgfusepath{fill}
+      \pgftext[base]{\color{fg} \inserttocsectionnumber}
+    \end{pgfpicture}\kern1.25ex%
+  }%
+~~{\large \color{blue} \inserttocsection\par}}
+
+\definecolor{mygray}{gray}{.2}
+\setbeamertemplate{subsection in toc}
+{   
+    \vspace{0.5em} 
+    \leavevmode
+    \leftskip=0.5em
+    {\color{black} $-$}
+    \hskip1em
+    {\color{mygray} \inserttocsubsection}
+    \par
+}
+
+\renewcommand{\mark}[1]{{\color{blue} \normalsize {#1}}}
+\renewcommand{\emph}[1]{{\color{blue} {#1}}}
